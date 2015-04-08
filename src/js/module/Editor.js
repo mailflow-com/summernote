@@ -545,9 +545,9 @@ define([
         $(anchor).attr('href', linkUrl);
         
         if (linkName) {
-          $(anchor).attr('data-attr-name', linkName);
+          $(anchor).attr('data-mf-linkname', linkName);
         } else {
-          $(anchor).removeAttr('data-attr-name');
+          $(anchor).removeAttr('data-mf-linkname');
         }
 
         if (isNewWindow) {
@@ -592,7 +592,7 @@ define([
       return {
         range: rng,
         text: rng.toString(),
-        name: $anchor.length ? $anchor.attr('data-attr-name') : null,
+        name: $anchor.length ? $anchor.attr('data-mf-linkname') : null,
         isNewWindow: $anchor.length ? $anchor.attr('target') === '_blank' : false,
         url: $anchor.length ? $anchor.attr('href') : ''
       };
