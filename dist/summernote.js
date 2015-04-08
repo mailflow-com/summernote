@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-04-08T10:03Z
+ * Date: 2015-04-08T10:11Z
  */
 (function (factory) {
   /* global define */
