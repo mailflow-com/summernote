@@ -264,6 +264,7 @@ define('summernote/defaults', function () {
         link: {
           link: 'Link',
           insert: 'Insert Link',
+          name: 'Tracking Name (optional)',
           unlink: 'Unlink',
           edit: 'Edit',
           textToDisplay: 'Text to display',

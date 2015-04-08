@@ -609,6 +609,10 @@ define([
                      '<label>' + lang.link.url + '</label>' +
                      '<input class="note-link-url form-control span12" type="text" />' +
                    '</div>' +
+                   '<div class="form-group row-fluid">' +
+                     '<label>' + lang.link.name + '</label>' +
+                     '<input class="note-link-name form-control span12" type="text" />' +
+                   '</div>' +
                    (!options.disableLinkTarget ?
                      '<div class="checkbox">' +
                        '<label>' + '<input type="checkbox" checked> ' +

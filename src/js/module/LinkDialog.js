@@ -28,10 +28,12 @@ define(function () {
         var $linkText = $linkDialog.find('.note-link-text'),
         $linkUrl = $linkDialog.find('.note-link-url'),
         $linkBtn = $linkDialog.find('.note-link-btn'),
+        $linkName = $linkDialog.find('.note-link-name'),
         $openInNewWindow = $linkDialog.find('input[type=checkbox]');
 
         $linkDialog.one('shown.bs.modal', function () {
           $linkText.val(linkInfo.text);
+          $linkName.val(linkInfo.name);
 
           $linkText.on('input', function () {
             // if linktext was modified by keyup,
@@ -63,6 +65,7 @@ define(function () {
               range: linkInfo.range,
               url: $linkUrl.val(),
               text: $linkText.val(),
+              name: $linkName.val(),
               newWindow: $openInNewWindow.is(':checked')
             });
             $linkDialog.modal('hide');

@@ -518,6 +518,7 @@ define([
       var linkUrl = linkInfo.url;
       var linkText = linkInfo.text;
       var isNewWindow = linkInfo.newWindow;
+      var linkName = linkInfo.name;
       var rng = linkInfo.range;
       var isTextChanged = rng.toString() !== linkText;
 
@@ -542,6 +543,13 @@ define([
 
       $.each(anchors, function (idx, anchor) {
         $(anchor).attr('href', linkUrl);
+        
+        if (linkName) {
+          $(anchor).attr('data-attr-name', linkName);
+        } else {
+          $(anchor).removeAttr('data-attr-name');
+        }
+
         if (isNewWindow) {
           $(anchor).attr('target', '_blank');
         } else {
@@ -584,6 +592,7 @@ define([
       return {
         range: rng,
         text: rng.toString(),
+        name: $anchor.length ? $anchor.attr('data-attr-name') : null,
         isNewWindow: $anchor.length ? $anchor.attr('target') === '_blank' : false,
         url: $anchor.length ? $anchor.attr('href') : ''
       };
