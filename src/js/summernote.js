@@ -190,6 +190,10 @@ define([
 
       // extend default options with custom user options
       var options = isInitOptions ? list.head(arguments) : {};
+      if (options.toolbar && !options.extend_toolbar) delete $.summernote.options.toolbar;
+
+      // user options overwrite default options
+
       options = $.extend(true, {}, $.summernote.options, options);
 
       // Include langInfo in options for later use, e.g. for image drag-n-drop

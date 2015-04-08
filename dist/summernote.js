@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-04-08T10:15Z
+ * Date: 2015-04-08T12:02Z
  */
 (function (factory) {
   /* global define */
@@ -6600,6 +6600,10 @@
 
       // extend default options with custom user options
       var options = isInitOptions ? list.head(arguments) : {};
+      if (options.toolbar && !options.extend_toolbar) delete $.summernote.options.toolbar;
+
+      // user options overwrite default options
+
       options = $.extend(true, {}, $.summernote.options, options);
 
       // Include langInfo in options for later use, e.g. for image drag-n-drop
