@@ -5048,7 +5048,8 @@ button.note-editor .close {
   .note-editor .modal-content {
     -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); } }
-.note-editor .tooltip {
+
+.tooltip {
   position: fixed;
   z-index: 1030;
   display: block;
@@ -5057,22 +5058,28 @@ button.note-editor .close {
   line-height: 1.4;
   opacity: 0;
   filter: alpha(opacity=0); }
-.note-editor .tooltip.in {
+
+.tooltip.in {
   opacity: 0.9;
   filter: alpha(opacity=90); }
-.note-editor .tooltip.top {
+
+.tooltip.top {
   margin-top: -3px;
   padding: 5px 0; }
-.note-editor .tooltip.right {
+
+.tooltip.right {
   margin-left: 3px;
   padding: 0 5px; }
-.note-editor .tooltip.bottom {
+
+.tooltip.bottom {
   margin-top: 3px;
   padding: 5px 0; }
-.note-editor .tooltip.left {
+
+.tooltip.left {
   margin-left: -3px;
   padding: 0 5px; }
-.note-editor .tooltip-inner {
+
+.tooltip-inner {
   max-width: 200px;
   padding: 3px 8px;
   color: #ffffff;
@@ -5080,57 +5087,67 @@ button.note-editor .close {
   text-decoration: none;
   background-color: #000000;
   border-radius: 4px; }
-.note-editor .tooltip-arrow {
+
+.tooltip-arrow {
   position: absolute;
   width: 0;
   height: 0;
   border-color: transparent;
   border-style: solid; }
-.note-editor .tooltip.top .tooltip-arrow {
+
+.tooltip.top .tooltip-arrow {
   bottom: 0;
   left: 50%;
   margin-left: -5px;
   border-width: 5px 5px 0;
   border-top-color: #000000; }
-.note-editor .tooltip.top-left .tooltip-arrow {
+
+.tooltip.top-left .tooltip-arrow {
   bottom: 0;
   left: 5px;
   border-width: 5px 5px 0;
   border-top-color: #000000; }
-.note-editor .tooltip.top-right .tooltip-arrow {
+
+.tooltip.top-right .tooltip-arrow {
   bottom: 0;
   right: 5px;
   border-width: 5px 5px 0;
   border-top-color: #000000; }
-.note-editor .tooltip.right .tooltip-arrow {
+
+.tooltip.right .tooltip-arrow {
   top: 50%;
   left: 0;
   margin-top: -5px;
   border-width: 5px 5px 5px 0;
   border-right-color: #000000; }
-.note-editor .tooltip.left .tooltip-arrow {
+
+.tooltip.left .tooltip-arrow {
   top: 50%;
   right: 0;
   margin-top: -5px;
   border-width: 5px 0 5px 5px;
   border-left-color: #000000; }
-.note-editor .tooltip.bottom .tooltip-arrow {
+
+.tooltip.bottom .tooltip-arrow {
   top: 0;
   left: 50%;
   margin-left: -5px;
   border-width: 0 5px 5px;
   border-bottom-color: #000000; }
-.note-editor .tooltip.bottom-left .tooltip-arrow {
+
+.tooltip.bottom-left .tooltip-arrow {
   top: 0;
   left: 5px;
   border-width: 0 5px 5px;
   border-bottom-color: #000000; }
-.note-editor .tooltip.bottom-right .tooltip-arrow {
+
+.tooltip.bottom-right .tooltip-arrow {
   top: 0;
   right: 5px;
   border-width: 0 5px 5px;
   border-bottom-color: #000000; }
-.note-editor .popover {
+
+.popover {
   position: absolute;
   top: 0;
   left: 0;
@@ -5147,15 +5164,20 @@ button.note-editor .close {
   -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   white-space: normal; }
-.note-editor .popover.top {
+
+.popover.top {
   margin-top: -10px; }
-.note-editor .popover.right {
+
+.popover.right {
   margin-left: 10px; }
-.note-editor .popover.bottom {
+
+.popover.bottom {
   margin-top: 10px; }
-.note-editor .popover.left {
+
+.popover.left {
   margin-left: -10px; }
-.note-editor .popover-title {
+
+.popover-title {
   margin: 0;
   padding: 8px 14px;
   font-size: 14px;
@@ -5164,113 +5186,138 @@ button.note-editor .close {
   background-color: #f7f7f7;
   border-bottom: 1px solid #ebebeb;
   border-radius: 5px 5px 0 0; }
-.note-editor .popover-content {
+
+.popover-content {
   padding: 9px 14px; }
-.note-editor .popover .arrow,
-.note-editor .popover .arrow:after {
+
+.popover .arrow,
+.popover .arrow:after {
   position: absolute;
   display: block;
   width: 0;
   height: 0;
   border-color: transparent;
   border-style: solid; }
-.note-editor .popover .arrow {
+
+.popover .arrow {
   border-width: 11px; }
-.note-editor .popover .arrow:after {
+
+.popover .arrow:after {
   border-width: 10px;
   content: ""; }
-.note-editor .popover.top .arrow {
+
+.popover.top .arrow {
   left: 50%;
   margin-left: -11px;
   border-bottom-width: 0;
   border-top-color: #999999;
   border-top-color: rgba(0, 0, 0, 0.25);
   bottom: -11px; }
-.note-editor .popover.top .arrow:after {
+
+.popover.top .arrow:after {
   content: " ";
   bottom: 1px;
   margin-left: -10px;
   border-bottom-width: 0;
   border-top-color: #ffffff; }
-.note-editor .popover.right .arrow {
+
+.popover.right .arrow {
   top: 50%;
   left: -11px;
   margin-top: -11px;
   border-left-width: 0;
   border-right-color: #999999;
   border-right-color: rgba(0, 0, 0, 0.25); }
-.note-editor .popover.right .arrow:after {
+
+.popover.right .arrow:after {
   content: " ";
   left: 1px;
   bottom: -10px;
   border-left-width: 0;
   border-right-color: #ffffff; }
-.note-editor .popover.bottom .arrow {
+
+.popover.bottom .arrow {
   left: 50%;
   margin-left: -11px;
   border-top-width: 0;
   border-bottom-color: #999999;
   border-bottom-color: rgba(0, 0, 0, 0.25);
   top: -11px; }
-.note-editor .popover.bottom .arrow:after {
+
+.popover.bottom .arrow:after {
   content: " ";
   top: 1px;
   margin-left: -10px;
   border-top-width: 0;
   border-bottom-color: #ffffff; }
-.note-editor .popover.left .arrow {
+
+.popover.left .arrow {
   top: 50%;
   right: -11px;
   margin-top: -11px;
   border-right-width: 0;
   border-left-color: #999999;
   border-left-color: rgba(0, 0, 0, 0.25); }
-.note-editor .popover.left .arrow:after {
+
+.popover.left .arrow:after {
   content: " ";
   right: 1px;
   border-right-width: 0;
   border-left-color: #ffffff;
   bottom: -10px; }
-.note-editor .carousel {
+
+.carousel {
   position: relative; }
-.note-editor .carousel-inner {
+
+.carousel-inner {
   position: relative;
   overflow: hidden;
   width: 100%; }
-.note-editor .carousel-inner > .item {
+
+.carousel-inner > .item {
   display: none;
   position: relative;
   -webkit-transition: 0.6s ease-in-out left;
   transition: 0.6s ease-in-out left; }
-.note-editor .carousel-inner > .item > img,
-.note-editor .carousel-inner > .item > a > img {
+
+.carousel-inner > .item > img,
+.carousel-inner > .item > a > img {
   display: block;
   max-width: 100%;
   height: auto;
   line-height: 1; }
-.note-editor .carousel-inner > .active,
-.note-editor .carousel-inner > .next,
-.note-editor .carousel-inner > .prev {
+
+.carousel-inner > .active,
+.carousel-inner > .next,
+.carousel-inner > .prev {
   display: block; }
-.note-editor .carousel-inner > .active {
+
+.carousel-inner > .active {
   left: 0; }
-.note-editor .carousel-inner > .next,
-.note-editor .carousel-inner > .prev {
+
+.carousel-inner > .next,
+.carousel-inner > .prev {
   position: absolute;
   top: 0;
   width: 100%; }
-.note-editor .carousel-inner > .next {
+
+.carousel-inner > .next {
   left: 100%; }
-.note-editor .carousel-inner > .prev {
+
+.carousel-inner > .prev {
   left: -100%; }
-.note-editor .carousel-inner > .next.left,
-.note-editor .carousel-inner > .prev.right {
+
+.carousel-inner > .next.left,
+.carousel-inner > .prev.right {
   left: 0; }
-.note-editor .carousel-inner > .active.left {
+
+.carousel-inner > .active.left {
   left: -100%; }
-.note-editor .carousel-inner > .active.right {
+
+.carousel-inner > .active.right {
   left: 100%; }
-.note-editor .carousel-control {
+
+.carousel-control {
   position: absolute;
   top: 0;
   left: 0;
@@ -5282,14 +5329,16 @@ button.note-editor .close {
   color: #ffffff;
   text-align: center;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6); }
-.note-editor .carousel-control.left {
+
+.carousel-control.left {
   background-image: -webkit-gradient(linear, 0% top, 100% top, from(rgba(0, 0, 0, 0.5)), to(rgba(0, 0, 0, 0.0001)));
   background-image: -webkit-linear-gradient(left, color-stop(rgba(0, 0, 0, 0.5) 0%), color-stop(rgba(0, 0, 0, 0.0001) 100%));
   background-image: -moz-linear-gradient(left, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.0001) 100%);
   background-image: linear-gradient(to right, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.0001) 100%);
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#80000000', endColorstr='#00000000', GradientType=1); }
-.note-editor .carousel-control.right {
+
+.carousel-control.right {
   left: auto;
   right: 0;
   background-image: -webkit-gradient(linear, 0% top, 100% top, from(rgba(0, 0, 0, 0.0001)), to(rgba(0, 0, 0, 0.5)));
@@ -5298,38 +5347,46 @@ button.note-editor .close {
   background-image: linear-gradient(to right, rgba(0, 0, 0, 0.0001) 0%, rgba(0, 0, 0, 0.5) 100%);
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000', endColorstr='#80000000', GradientType=1); }
-.note-editor .carousel-control:hover,
-.note-editor .carousel-control:focus {
+
+.carousel-control:hover,
+.carousel-control:focus {
   color: #ffffff;
   text-decoration: none;
   opacity: 0.9;
   filter: alpha(opacity=90); }
-.note-editor .carousel-control .icon-prev,
-.note-editor .carousel-control .icon-next,
-.note-editor .carousel-control .glyphicon-chevron-left,
-.note-editor .carousel-control .glyphicon-chevron-right {
+
+.carousel-control .icon-prev,
+.carousel-control .icon-next,
+.carousel-control .glyphicon-chevron-left,
+.carousel-control .glyphicon-chevron-right {
   position: absolute;
   top: 50%;
   z-index: 5;
   display: inline-block; }
-.note-editor .carousel-control .icon-prev,
-.note-editor .carousel-control .glyphicon-chevron-left {
+
+.carousel-control .icon-prev,
+.carousel-control .glyphicon-chevron-left {
   left: 50%; }
-.note-editor .carousel-control .icon-next,
-.note-editor .carousel-control .glyphicon-chevron-right {
+
+.carousel-control .icon-next,
+.carousel-control .glyphicon-chevron-right {
   right: 50%; }
-.note-editor .carousel-control .icon-prev,
-.note-editor .carousel-control .icon-next {
+
+.carousel-control .icon-prev,
+.carousel-control .icon-next {
   width: 20px;
   height: 20px;
   margin-top: -10px;
   margin-left: -10px;
   font-family: serif; }
-.note-editor .carousel-control .icon-prev:before {
+
+.carousel-control .icon-prev:before {
   content: '\2039'; }
-.note-editor .carousel-control .icon-next:before {
+
+.carousel-control .icon-next:before {
   content: '\203a'; }
-.note-editor .carousel-indicators {
+
+.carousel-indicators {
   position: absolute;
   bottom: 10px;
   left: 50%;
@@ -5339,7 +5396,8 @@ button.note-editor .close {
   padding-left: 0;
   list-style: none;
   text-align: center; }
-.note-editor .carousel-indicators li {
+
+.carousel-indicators li {
   display: inline-block;
   width: 10px;
   height: 10px;
@@ -5348,12 +5406,14 @@ button.note-editor .close {
   border: 1px solid #ffffff;
   border-radius: 10px;
   cursor: pointer; }
-.note-editor .carousel-indicators .active {
+
+.carousel-indicators .active {
   margin: 0;
   width: 12px;
   height: 12px;
   background-color: #ffffff; }
-.note-editor .carousel-caption {
+
+.carousel-caption {
   position: absolute;
   left: 15%;
   right: 15%;
@@ -5364,23 +5424,27 @@ button.note-editor .close {
   color: #ffffff;
   text-align: center;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6); }
-.note-editor .carousel-caption .btn {
+
+.carousel-caption .btn {
   text-shadow: none; }
+
 @media screen and (min-width: 768px) {
-  .note-editor .carousel-control .glyphicons-chevron-left,
-  .note-editor .carousel-control .glyphicons-chevron-right,
-  .note-editor .carousel-control .icon-prev,
-  .note-editor .carousel-control .icon-next {
+  .carousel-control .glyphicons-chevron-left,
+  .carousel-control .glyphicons-chevron-right,
+  .carousel-control .icon-prev,
+  .carousel-control .icon-next {
     width: 30px;
     height: 30px;
     margin-top: -15px;
     margin-left: -15px;
     font-size: 30px; }
-  .note-editor .carousel-caption {
+
+  .carousel-caption {
     left: 20%;
     right: 20%;
     padding-bottom: 30px; }
-  .note-editor .carousel-indicators {
+
+  .carousel-indicators {
     bottom: 20px; } }
 .note-editor .clearfix:before,
 .note-editor .clearfix:after {
