@@ -190,7 +190,7 @@ define([
 
       // extend default options with custom user options
       var options = isInitOptions ? list.head(arguments) : {};
-      if (options.toolbar && !options.extend_toolbar) delete $.summernote.options.toolbar;
+      if (options.toolbar && !options.extendToolbar) { delete $.summernote.options.toolbar; }
 
       // user options overwrite default options
 

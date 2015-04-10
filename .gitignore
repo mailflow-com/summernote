@@ -11,3 +11,6 @@ bower_components
 
 # zip file
 *.zip
+
+.sass-cache
+copy.sh

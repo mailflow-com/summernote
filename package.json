@@ -16,18 +16,20 @@
     "email": "<susukang98@gmail.com>"
   },
   "devDependencies": {
-    "load-grunt-tasks": "0.2.0",
-    "requirejs": "2.1.9",
+    "connect-livereload": "*",
     "grunt": "*",
+    "grunt-contrib-compress": "*",
+    "grunt-contrib-connect": "*",
+    "grunt-contrib-cssmin": "^0.12.2",
     "grunt-contrib-jshint": "0.7.2",
     "grunt-contrib-qunit": "0.5.2",
+    "grunt-contrib-sass": "^0.9.2",
     "grunt-contrib-uglify": "~0.2.2",
-    "grunt-contrib-watch": "*",
-    "grunt-contrib-connect": "*",
-    "grunt-contrib-compress": "*",
-    "grunt-recess": "*",
+    "grunt-contrib-watch": "^0.6.1",
     "grunt-exec": "^0.4.6",
-    "connect-livereload": "*"
+    "grunt-recess": "*",
+    "load-grunt-tasks": "0.2.0",
+    "requirejs": "2.1.9"
   },
   "dependencies": {
     "open": "0.0.4"

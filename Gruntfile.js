@@ -64,12 +64,23 @@ module.exports = function (grunt) {
       }
     },
 
-    // recess: minify stylesheets
-    recess: {
+    sass: {
       dist: {
-        options: { compile: true, compress: true },
         files: {
-          'dist/summernote.css': ['src/less/summernote.less']
+          'dist/summernote.css': 'src/sass/summernote.scss',
+          'dist/summernote-bs3.css': 'src/sass/summernote-bs3.scss'
+        }
+      }
+    },
+
+    cssmin: {
+      options: {
+        shorthandCompacting: false,
+        roundingPrecision: -1
+      },
+      target: {
+        files: {
+          'dist/summernote.min.css': ['dist/summernote-bs3.css', 'dist/summernote.css']
         }
       }
     },
@@ -89,7 +100,8 @@ module.exports = function (grunt) {
           expand: true,
           src: [
             'dist/*.js',
-            'dist/summernote.css'
+            'dist/summernote.css',
+            'dist/summernote-bs3.css'
           ]
         }]
       }
@@ -118,8 +130,8 @@ module.exports = function (grunt) {
     // watch source code change
     watch: {
       all: {
-        files: ['src/less/*.less', 'src/js/**/*.js'],
-        tasks: ['recess', 'jshint', 'qunit'],
+        files: ['src/js/**/*.js', 'src/sass/*.scss'],
+        tasks: ['sass', 'cssmin', 'jshint', 'qunit'],
         options: {
           livereload: true
         }
@@ -151,7 +163,8 @@ module.exports = function (grunt) {
   grunt.registerTask('test', ['jshint', 'qunit']);
 
   // dist: make dist files
-  grunt.registerTask('dist', ['build', 'test', 'uglify', 'recess']);
+  grunt.registerTask('dist', ['build', 'test', 'uglify', 'sass', 'cssmin']);
+
 
   // deploy: compress dist files
   grunt.registerTask('deploy', ['dist', 'compress']);
