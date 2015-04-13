@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-04-10T15:08Z
+ * Date: 2015-04-13T11:06Z
  */
 (function (factory) {
   /* global define */
@@ -4881,8 +4881,19 @@
             $imageUrl = $dialog.find('.note-image-url'),
             $imageBtn = $dialog.find('.note-image-btn');
         
+        $imageUrl.val('');
+
         if (options.s3) {
           $imageDialog.one('shown.bs.modal', function () {
+            // Cloning imageInput to clear element.
+            $imageInput.replaceWith($imageInput.clone()
+              .on('change', function () {
+                deferred.resolve(this.files || this.value);
+                $imageDialog.modal('hide');
+              })
+              .val('')
+            );
+
             $('#SummernoteS3Form').fileupload({
               forceIframeTransport: true,
               autoUpload: true,
@@ -4891,7 +4902,7 @@
                   url: options.s3TokenUrl,
                   type: 'POST',
                   dataType: 'json',
-                  data: {doc: {title: data.files[0].name}},
+                  data: {doc: {title: data.files[0].name, size: data.files[0].size, type: data.files[0].type}},
                   async: false,
                   success: function(retdata) {
                     // after we created our document in rails, it is going to send back JSON of they key,
@@ -4899,6 +4910,7 @@
                     $('#SummernoteS3Form').find('input[name=key]').val(retdata.key);
                     $('#SummernoteS3Form').find('input[name=policy]').val(retdata.policy);
                     $('#SummernoteS3Form').find('input[name=signature]').val(retdata.signature);
+                    $('#SummernoteS3Form').find('input[name=AWSAccessKeyId]').val(retdata.AWSAccessKeyId);
                   }
                 });
 
@@ -4914,10 +4926,10 @@
                 console.log(data);
               },
               done: function (event, data) {
-                debugger;
-
-                // hide the loading spinner that we turned on earlier.
                 $('#SummernoteS3Loading').hide();
+                var url = data.url + data.formData[0].value;
+                toggleBtn($imageBtn, url);
+                return $imageUrl.val(url);
               },
             });
 
@@ -6128,7 +6140,7 @@
             '<label>Image URL</label>' +
             '<input class="note-image-url form-control span12" type="12"></input>' +
           '</div>' +
-          '<div id="SummernoteS3Loading">Uploading...</div>';
+          '<div id="SummernoteS3Loading" style="display: none;">Uploading...</div>';
         } else {        
           var body = '<form class="note-modal-form">' +
                       '<div class="form-group row-fluid note-group-select-from-files">' +
@@ -6685,7 +6697,7 @@
 
       // extend default options with custom user options
       var options = isInitOptions ? list.head(arguments) : {};
-      if (options.toolbar && !options.extend_toolbar) delete $.summernote.options.toolbar;
+      if (options.toolbar && !options.extendToolbar) { delete $.summernote.options.toolbar; }
 
       // user options overwrite default options
 

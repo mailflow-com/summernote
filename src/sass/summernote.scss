@@ -4,6 +4,7 @@
 @mixin opacity($opacity) {
   opacity: $opacity;
   // IE8 filter
+  background: yellow;
   $opacity-ie: ($opacity * 100);
   filter: #{alpha(opacity=$opacity-ie)};
 }
@@ -138,7 +139,7 @@ $background-color: #f5f5f5 !default;
     /* override BS2 default style */
     @include box-sizing(border-box);
     border-radius: 0;
-    margin-bottom: 0;
+    margin-bottom: 0px;
   }
 }
 
@@ -474,5 +475,34 @@ $background-color: #f5f5f5 !default;
       border-radius: 5px;
       @include opacity(.7);
     }
+  }
+}
+
+/* Images
+ ------------------------------------------*/
+
+.SummernoteTabs {
+  display: inline-block;
+  .SummernoteTab {
+    display: none;
+  }
+}
+
+.SummernoteMenu {
+  display: inline-block;
+}
+
+.SummernoteImage{
+  height: 150px;
+  width: 150px;
+  background-position: center center;
+  display: inline-block;
+}
+
+
+.SummernoteSelectedUrl {
+  input {
+    width: 80% !important;
+    float: left !important;
   }
 }

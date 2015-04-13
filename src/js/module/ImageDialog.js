@@ -52,6 +52,38 @@ define(function () {
         $imageUrl.val('');
 
         if (options.s3) {
+          var $menuItems = $dialog.find('.SummernoteMenu li');
+          var $imagesDiv = $dialog.find('.SummernoteImages');
+
+          var mediaImages = options.s3FetchExisting();
+          var images = '';
+          if (mediaImages.length > 0) {
+            var i;
+            for (i = 0 ; i < mediaImages.length; i++) {
+              var im = mediaImages[i];
+              images += '<div style="background-image: url(\''+ im.url +'\');" data-image-url="'+ im.url +'" class="SummernoteImage"></div>';
+            }
+            $dialog.find('#SummernoteTab1').show();
+          } else {
+            images = 'No images';
+            $dialog.find('#SummernoteTab2').show();
+          }
+          $imagesDiv.empty().append(images);
+
+          $imageItems = $dialog.find('.SummernoteImage');
+
+          $menuItems.on('click', function (e) {
+            var tab = $(e.currentTarget).attr('data-activate-tab');
+            $('.SummernoteTab').hide();
+            $('#' + tab).show();
+          });
+
+          $imageItems.on('click', function (e) {
+            var url = $(e.currentTarget).attr('data-image-url');
+            toggleBtn($imageBtn, url);
+            return $imageUrl.val(url);          
+          });
+
           $imageDialog.one('shown.bs.modal', function () {
             // Cloning imageInput to clear element.
             $imageInput.replaceWith($imageInput.clone()
@@ -110,6 +142,8 @@ define(function () {
 
           }).one('hidden.bs.modal', function () {
             $imageBtn.off('click');
+            $imageItems.off('click');
+            $menuItems.off('click');
 
             if (deferred.state() === 'pending') {
               deferred.reject();

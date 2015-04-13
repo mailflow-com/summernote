@@ -587,22 +587,39 @@ define([
 
 
         if (options.s3) {
-          var body = '<form id="SummernoteS3Form" method="post" enctype="multipart/form-data" action="' 
-            + options.s3BucketUrl +
-            '">' +
-            '<input type="hidden" name="key"></input>' +
-            '<input type="hidden" name="AWSAccessKeyId"></input>' +
-            '<input type="hidden" name="acl" value="private"></input>' +
-            '<input type="hidden" name="success_action_status" value="200"></input>' +
-            '<input type="hidden" name="policy"></input>' +
-            '<input type="hidden" name="signature"></input>' +
-            '<input type="file" name="file"></input>' +
-          '</form>' +
-          '<div class="form-group row-fluid">' +
-            '<label>Image URL</label>' +
-            '<input class="note-image-url form-control span12" type="12"></input>' +
+          var body = 
+          '<div class="SummernoteMenu">' +
+            '<ul>'+
+              '<li data-activate-tab="SummernoteTab1">Media library</li>' +
+              '<li data-activate-tab="SummernoteTab2">Upload new</li>' +
+            '</ul>' +
           '</div>' +
-          '<div id="SummernoteS3Loading" style="display: none;">Uploading...</div>';
+          '<div class="SummernoteTabs">' +
+            '<div class="SummernoteTab" id="SummernoteTab1">' +
+              '<span>Media library</span>' +
+              '<div class="SummernoteImages">' +
+              '</div>' +
+            '</div>' +
+            '<div class="SummernoteTab" id="SummernoteTab2">' +
+              '<span>Upload</span>' +
+              '<form id="SummernoteS3Form" method="post" enctype="multipart/form-data" action="'+ options.s3BucketUrl +'">' +
+                '<input type="hidden" name="key"></input>' +
+                '<input type="hidden" name="AWSAccessKeyId"></input>' +
+                '<input type="hidden" name="acl" value="private"></input>' +
+                '<input type="hidden" name="success_action_status" value="200"></input>' +
+                '<input type="hidden" name="policy"></input>' +
+                '<input type="hidden" name="signature"></input>' +
+                '<input class="note-image-input" type="file" name="files" accept="image/*" type="file" name="file"></input>' +
+                imageLimitation +
+              '</form>' +
+              '<div id="SummernoteS3Loading" style="display: none;">Uploading...</div>' +
+            '</div>' +
+          '</div>';
+        var footer = '<div class="SummernoteSelectedUrl">' +
+                      '<label>Image URL</label>' +
+                      '<input class="note-image-url form-control"></input>' +
+                      '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>' +
+                    '</div>';
         } else {        
           var body = '<form class="note-modal-form">' +
                       '<div class="form-group row-fluid note-group-select-from-files">' +
@@ -615,8 +632,8 @@ define([
                        '<input class="note-image-url form-control span12" type="text" />' +
                      '</div>' + 
                      '</form>';
-        }
         var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
+        }
         return tplDialog('note-image-dialog', lang.image.insert, body, footer);
       },
 

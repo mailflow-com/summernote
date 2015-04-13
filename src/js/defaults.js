@@ -36,6 +36,7 @@ define('summernote/defaults', function () {
       s3: false,                    // use s3 in image upload
       s3TokenUrl: null,             // s3 token url
       s3BucketUrl: null,            // s3 bucket url
+      s3FetchExisting: null,        // function to get array of images for display
       width: null,                  // set editor width
       height: null,                 // set editor height, ex) 300
 
