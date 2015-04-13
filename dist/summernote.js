@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-04-08T12:02Z
+ * Date: 2015-04-10T15:08Z
  */
 (function (factory) {
   /* global define */
@@ -2176,6 +2176,9 @@
      * @property {Fucntion} [options.onsubmit]
      */
     options: {
+      s3: false,                    // use s3 in image upload
+      s3TokenUrl: null,             // s3 token url
+      s3BucketUrl: null,            // s3 bucket url
       width: null,                  // set editor width
       height: null,                 // set editor height, ex) 300
 
@@ -4843,10 +4846,11 @@
 
     this.show = function (layoutInfo) {
       var $dialog = layoutInfo.dialog(),
+          $editor = layoutInfo.editor(),
           $editable = layoutInfo.editable();
 
       handler.invoke('editor.saveRange', $editable);
-      this.showImageDialog($editable, $dialog).then(function (data) {
+      this.showImageDialog($editable, $dialog, $editor).then(function (data) {
         handler.invoke('editor.restoreRange', $editable);
 
         if (typeof data === 'string') {
@@ -4868,51 +4872,108 @@
      * @param {jQuery} $dialog
      * @return {Promise}
      */
-    this.showImageDialog = function ($editable, $dialog) {
+    this.showImageDialog = function ($editable, $dialog, $editor) {
+      var options = $editor.data('options');
       return $.Deferred(function (deferred) {
         var $imageDialog = $dialog.find('.note-image-dialog');
 
         var $imageInput = $dialog.find('.note-image-input'),
             $imageUrl = $dialog.find('.note-image-url'),
             $imageBtn = $dialog.find('.note-image-btn');
+        
+        if (options.s3) {
+          $imageDialog.one('shown.bs.modal', function () {
+            $('#SummernoteS3Form').fileupload({
+              forceIframeTransport: true,
+              autoUpload: true,
+              add: function (event, data) {
+                $.ajax({
+                  url: options.s3TokenUrl,
+                  type: 'POST',
+                  dataType: 'json',
+                  data: {doc: {title: data.files[0].name}},
+                  async: false,
+                  success: function(retdata) {
+                    // after we created our document in rails, it is going to send back JSON of they key,
+                    // policy, and signature.  We will put these into our form before it gets submitted to amazon.
+                    $('#SummernoteS3Form').find('input[name=key]').val(retdata.key);
+                    $('#SummernoteS3Form').find('input[name=policy]').val(retdata.policy);
+                    $('#SummernoteS3Form').find('input[name=signature]').val(retdata.signature);
+                  }
+                });
 
-        $imageDialog.one('shown.bs.modal', function () {
-          // Cloning imageInput to clear element.
-          $imageInput.replaceWith($imageInput.clone()
-            .on('change', function () {
-              deferred.resolve(this.files || this.value);
+                data.submit();
+              },
+              send: function(e, data) {
+                // show a loading spinner because now the form will be submitted to amazon, 
+                // and the file will be directly uploaded there, via an iframe in the background. 
+                $('#SummernoteS3Loading').show();
+              },
+              fail: function(e, data) {
+                console.log('fail');
+                console.log(data);
+              },
+              done: function (event, data) {
+                debugger;
+
+                // hide the loading spinner that we turned on earlier.
+                $('#SummernoteS3Loading').hide();
+              },
+            });
+
+            $imageBtn.click(function (event) {
+              event.preventDefault();
+
+              deferred.resolve($imageUrl.val());
               $imageDialog.modal('hide');
-            })
-            .val('')
-          );
+            });
 
-          $imageBtn.click(function (event) {
-            event.preventDefault();
+          }).one('hidden.bs.modal', function () {
+            $imageBtn.off('click');
 
-            deferred.resolve($imageUrl.val());
-            $imageDialog.modal('hide');
-          });
-
-          $imageUrl.on('keyup paste', function (event) {
-            var url;
-            
-            if (event.type === 'paste') {
-              url = event.originalEvent.clipboardData.getData('text');
-            } else {
-              url = $imageUrl.val();
+            if (deferred.state() === 'pending') {
+              deferred.reject();
             }
-            
-            toggleBtn($imageBtn, url);
-          }).val('').trigger('focus');
-        }).one('hidden.bs.modal', function () {
-          $imageInput.off('change');
-          $imageUrl.off('keyup paste');
-          $imageBtn.off('click');
+          }).modal('show');
+        } else {        
+          $imageDialog.one('shown.bs.modal', function () {
+            // Cloning imageInput to clear element.
+            $imageInput.replaceWith($imageInput.clone()
+              .on('change', function () {
+                deferred.resolve(this.files || this.value);
+                $imageDialog.modal('hide');
+              })
+              .val('')
+            );
 
-          if (deferred.state() === 'pending') {
-            deferred.reject();
-          }
-        }).modal('show');
+            $imageBtn.click(function (event) {
+              event.preventDefault();
+
+              deferred.resolve($imageUrl.val());
+              $imageDialog.modal('hide');
+            });
+
+            $imageUrl.on('keyup paste', function (event) {
+              var url;
+              
+              if (event.type === 'paste') {
+                url = event.originalEvent.clipboardData.getData('text');
+              } else {
+                url = $imageUrl.val();
+              }
+              
+              toggleBtn($imageBtn, url);
+            }).val('').trigger('focus');
+          }).one('hidden.bs.modal', function () {
+            $imageInput.off('change');
+            $imageUrl.off('keyup paste');
+            $imageBtn.off('click');
+
+            if (deferred.state() === 'pending') {
+              deferred.reject();
+            }
+          }).modal('show');
+        }
       });
     };
   };
@@ -5018,12 +5079,12 @@
       var callbacks = $editable.data('callbacks');
       var options = $editor.data('options');
 
-      // If onImageUpload options setted
       if (callbacks.onImageUpload) {
+      // if callback  
         callbacks.onImageUpload(files, modules.editor, $editable);
         bindCustomEvent($holder, 'image.upload')([files]);
-      // else insert Image as dataURL
       } else {
+      // else insert image as dataURL  
         $.each(files, function (idx, file) {
           var filename = file.name;
           if (options.maximumImageFileSize && options.maximumImageFileSize < file.size) {
@@ -5043,7 +5104,7 @@
               }
             });
           }
-        });
+        });        
       }
     };
 
@@ -5562,12 +5623,10 @@
                      '<h4 class="modal-title">' + title + '</h4>' +
                    '</div>' : ''
                    ) +
-                   '<form class="note-modal-form">' +
                      '<div class="modal-body">' + body + '</div>' +
                      (footer ?
                      '<div class="modal-footer">' + footer + '</div>' : ''
                      ) +
-                   '</form>' +
                  '</div>' +
                '</div>' +
              '</div>';
@@ -6052,21 +6111,44 @@
           imageLimitation = '<small>' + lang.image.maximumFileSize + ' : ' + readableSize + '</small>';
         }
 
-        var body = '<div class="form-group row-fluid note-group-select-from-files">' +
-                     '<label>' + lang.image.selectFromFiles + '</label>' +
-                     '<input class="note-image-input" type="file" name="files" accept="image/*" multiple="multiple" />' +
-                     imageLimitation +
-                   '</div>' +
-                   '<div class="form-group row-fluid">' +
-                     '<label>' + lang.image.url + '</label>' +
-                     '<input class="note-image-url form-control span12" type="text" />' +
-                   '</div>';
+
+        if (options.s3) {
+          var body = '<form id="SummernoteS3Form" method="post" enctype="multipart/form-data" action="' 
+            + options.s3BucketUrl +
+            '">' +
+            '<input type="hidden" name="key"></input>' +
+            '<input type="hidden" name="AWSAccessKeyId"></input>' +
+            '<input type="hidden" name="acl" value="private"></input>' +
+            '<input type="hidden" name="success_action_status" value="200"></input>' +
+            '<input type="hidden" name="policy"></input>' +
+            '<input type="hidden" name="signature"></input>' +
+            '<input type="file" name="file"></input>' +
+          '</form>' +
+          '<div class="form-group row-fluid">' +
+            '<label>Image URL</label>' +
+            '<input class="note-image-url form-control span12" type="12"></input>' +
+          '</div>' +
+          '<div id="SummernoteS3Loading">Uploading...</div>';
+        } else {        
+          var body = '<form class="note-modal-form">' +
+                      '<div class="form-group row-fluid note-group-select-from-files">' +
+                       '<label>' + lang.image.selectFromFiles + '</label>' +
+                       '<input class="note-image-input" type="file" name="files" accept="image/*" multiple="multiple" />' +
+                       imageLimitation +
+                     '</div>' +
+                     '<div class="form-group row-fluid">' +
+                       '<label>' + lang.image.url + '</label>' +
+                       '<input class="note-image-url form-control span12" type="text" />' +
+                     '</div>' + 
+                     '</form>';
+        }
         var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
         return tplDialog('note-image-dialog', lang.image.insert, body, footer);
       },
 
       link: function (lang, options) {
-        var body = '<div class="form-group row-fluid">' +
+        var body = '<form class="note-modal-form">' +
+                   '<div class="form-group row-fluid">' +
                      '<label>' + lang.link.textToDisplay + '</label>' +
                      '<input class="note-link-text form-control span12" type="text" />' +
                    '</div>' +
@@ -6084,20 +6166,23 @@
                          lang.link.openInNewWindow +
                        '</label>' +
                      '</div>' : ''
-                   );
+                   ) +
+                   '</form>';
         var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
         return tplDialog('note-link-dialog', lang.link.insert, body, footer);
       },
 
       help: function (lang, options) {
-        var body = '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + lang.shortcut.close + '</a>' +
+        var body = '<form class="note-modal-form">' +
+                   '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + lang.shortcut.close + '</a>' +
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
                      '<a href="//summernote.org/" target="_blank">Summernote 0.6.3</a> · ' +
                      '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>' +
-                   '</p>';
+                   '</p>' +
+                   '</form>';
         return tplDialog('note-help-dialog', '', body, '');
       }
     };

@@ -35,7 +35,7 @@ module.exports = function (grunt) {
     jshint: {
       all: {
         src: [
-          'src/**/*.js',
+          'src/js/**/*.js',
           'plugin/**/*.js',
           'lang/**/*.js',
           'Gruntfile.js',
@@ -119,7 +119,7 @@ module.exports = function (grunt) {
     watch: {
       all: {
         files: ['src/less/*.less', 'src/js/**/*.js'],
-        tasks: ['recess', 'jshint', 'qunit'],
+        tasks: ['recess', 'qunit'],
         options: {
           livereload: true
         }
@@ -151,7 +151,7 @@ module.exports = function (grunt) {
   grunt.registerTask('test', ['jshint', 'qunit']);
 
   // dist: make dist files
-  grunt.registerTask('dist', ['build', 'test', 'uglify', 'recess']);
+  grunt.registerTask('dist', ['build', 'uglify', 'recess']);
 
   // deploy: compress dist files
   grunt.registerTask('deploy', ['dist', 'compress']);

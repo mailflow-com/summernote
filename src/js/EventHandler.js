@@ -89,12 +89,12 @@ define([
       var callbacks = $editable.data('callbacks');
       var options = $editor.data('options');
 
-      // If onImageUpload options setted
       if (callbacks.onImageUpload) {
+      // if callback  
         callbacks.onImageUpload(files, modules.editor, $editable);
         bindCustomEvent($holder, 'image.upload')([files]);
-      // else insert Image as dataURL
       } else {
+      // else insert image as dataURL  
         $.each(files, function (idx, file) {
           var filename = file.name;
           if (options.maximumImageFileSize && options.maximumImageFileSize < file.size) {
@@ -114,7 +114,7 @@ define([
               }
             });
           }
-        });
+        });        
       }
     };
 
