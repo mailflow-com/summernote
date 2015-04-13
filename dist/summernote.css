@@ -337,21 +337,21 @@
 
 /* Images
  ------------------------------------------*/
-.SummernoteTabs {
+.summernote-tabs {
   display: inline-block; }
-  .SummernoteTabs .SummernoteTab {
+  .summernote-tabs .summernote-tab {
     display: none; }
 
-.SummernoteMenu {
+.summernote-menu {
   display: inline-block; }
 
-.SummernoteImage {
+.summernote-image {
   height: 150px;
   width: 150px;
   background-position: center center;
   display: inline-block; }
 
-.SummernoteSelectedUrl input {
+.summernote-selected-url input {
   width: 80% !important;
   float: left !important; }
 

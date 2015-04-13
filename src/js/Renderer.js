@@ -588,21 +588,21 @@ define([
 
         if (options.s3) {
           var body = 
-          '<div class="SummernoteMenu">' +
+          '<div class="summernote-menu">' +
             '<ul>'+
-              '<li data-activate-tab="SummernoteTab1">Media library</li>' +
-              '<li data-activate-tab="SummernoteTab2">Upload new</li>' +
+              '<li data-activate-tab="summernote-tab-1">Media library</li>' +
+              '<li data-activate-tab="summernote-tab-2">Upload new</li>' +
             '</ul>' +
           '</div>' +
-          '<div class="SummernoteTabs">' +
-            '<div class="SummernoteTab" id="SummernoteTab1">' +
+          '<div class="summernote-tabs">' +
+            '<div class="summernote-tab" id="summernote-tab-1">' +
               '<span>Media library</span>' +
-              '<div class="SummernoteImages">' +
+              '<div class="summernote-images">' +
               '</div>' +
             '</div>' +
-            '<div class="SummernoteTab" id="SummernoteTab2">' +
+            '<div class="summernote-tab" id="summernote-tab-2">' +
               '<span>Upload</span>' +
-              '<form id="SummernoteS3Form" method="post" enctype="multipart/form-data" action="'+ options.s3BucketUrl +'">' +
+              '<form id="summernote-s3-form" method="post" enctype="multipart/form-data" action="'+ options.s3BucketUrl +'">' +
                 '<input type="hidden" name="key"></input>' +
                 '<input type="hidden" name="AWSAccessKeyId"></input>' +
                 '<input type="hidden" name="acl" value="private"></input>' +
@@ -612,10 +612,10 @@ define([
                 '<input class="note-image-input" type="file" name="files" accept="image/*" type="file" name="file"></input>' +
                 imageLimitation +
               '</form>' +
-              '<div id="SummernoteS3Loading" style="display: none;">Uploading...</div>' +
+              '<div id="summernote-s3-loading" style="display: none;">Uploading...</div>' +
             '</div>' +
           '</div>';
-        var footer = '<div class="SummernoteSelectedUrl">' +
+        var footer = '<div class="summernote-selected-url">' +
                       '<label>Image URL</label>' +
                       '<input class="note-image-url form-control"></input>' +
                       '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>' +

@@ -52,8 +52,8 @@ define(function () {
         $imageUrl.val('');
 
         if (options.s3) {
-          var $menuItems = $dialog.find('.SummernoteMenu li');
-          var $imagesDiv = $dialog.find('.SummernoteImages');
+          var $menuItems = $dialog.find('.summernote-menu li');
+          var $imagesDiv = $dialog.find('.summernote-images');
 
           var mediaImages = options.s3FetchExisting();
           var images = '';
@@ -61,20 +61,20 @@ define(function () {
             var i;
             for (i = 0 ; i < mediaImages.length; i++) {
               var im = mediaImages[i];
-              images += '<div style="background-image: url(\''+ im.url +'\');" data-image-url="'+ im.url +'" class="SummernoteImage"></div>';
+              images += '<div style="background-image: url(\''+ im.url +'\');" data-image-url="'+ im.url +'" class="summernote-image"></div>';
             }
-            $dialog.find('#SummernoteTab1').show();
+            $dialog.find('#summernote-tab-1').show();
           } else {
             images = 'No images';
-            $dialog.find('#SummernoteTab2').show();
+            $dialog.find('#summernote-tab-2').show();
           }
           $imagesDiv.empty().append(images);
 
-          $imageItems = $dialog.find('.SummernoteImage');
+          $imageItems = $dialog.find('.summernote-image');
 
           $menuItems.on('click', function (e) {
             var tab = $(e.currentTarget).attr('data-activate-tab');
-            $('.SummernoteTab').hide();
+            $('.summernote-tab').hide();
             $('#' + tab).show();
           });
 
@@ -94,7 +94,7 @@ define(function () {
               .val('')
             );
 
-            $('#SummernoteS3Form').fileupload({
+            $('#summernote-s3-form').fileupload({
               forceIframeTransport: true,
               autoUpload: true,
               add: function (event, data) {
@@ -107,10 +107,10 @@ define(function () {
                   success: function(retdata) {
                     // after we created our document in rails, it is going to send back JSON of they key,
                     // policy, and signature.  We will put these into our form before it gets submitted to amazon.
-                    $('#SummernoteS3Form').find('input[name=key]').val(retdata.key);
-                    $('#SummernoteS3Form').find('input[name=policy]').val(retdata.policy);
-                    $('#SummernoteS3Form').find('input[name=signature]').val(retdata.signature);
-                    $('#SummernoteS3Form').find('input[name=AWSAccessKeyId]').val(retdata.AWSAccessKeyId);
+                    $('#summernote-s3-form').find('input[name=key]').val(retdata.key);
+                    $('#summernote-s3-form').find('input[name=policy]').val(retdata.policy);
+                    $('#summernote-s3-form').find('input[name=signature]').val(retdata.signature);
+                    $('#summernote-s3-form').find('input[name=AWSAccessKeyId]').val(retdata.AWSAccessKeyId);
                   }
                 });
 
@@ -119,14 +119,14 @@ define(function () {
               send: function(e, data) {
                 // show a loading spinner because now the form will be submitted to amazon, 
                 // and the file will be directly uploaded there, via an iframe in the background. 
-                $('#SummernoteS3Loading').show();
+                $('#summernote-s3-loading').show();
               },
               fail: function(e, data) {
                 console.log('fail');
                 console.log(data);
               },
               done: function (event, data) {
-                $('#SummernoteS3Loading').hide();
+                $('#summernote-s3-loading').hide();
                 var url = data.url + data.formData[0].value;
                 toggleBtn($imageBtn, url);
                 return $imageUrl.val(url);

@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-04-13T11:06Z
+ * Date: 2015-04-13T15:26Z
  */
 (function (factory) {
   /* global define */
@@ -2179,6 +2179,7 @@
       s3: false,                    // use s3 in image upload
       s3TokenUrl: null,             // s3 token url
       s3BucketUrl: null,            // s3 bucket url
+      s3FetchExisting: null,        // function to get array of images for display
       width: null,                  // set editor width
       height: null,                 // set editor height, ex) 300
 
@@ -4884,6 +4885,38 @@
         $imageUrl.val('');
 
         if (options.s3) {
+          var $menuItems = $dialog.find('.summernote-menu li');
+          var $imagesDiv = $dialog.find('.summernote-images');
+
+          var mediaImages = options.s3FetchExisting();
+          var images = '';
+          if (mediaImages.length > 0) {
+            var i;
+            for (i = 0 ; i < mediaImages.length; i++) {
+              var im = mediaImages[i];
+              images += '<div style="background-image: url(\''+ im.url +'\');" data-image-url="'+ im.url +'" class="summernote-image"></div>';
+            }
+            $dialog.find('#summernote-tab-1').show();
+          } else {
+            images = 'No images';
+            $dialog.find('#summernote-tab-2').show();
+          }
+          $imagesDiv.empty().append(images);
+
+          $imageItems = $dialog.find('.summernote-image');
+
+          $menuItems.on('click', function (e) {
+            var tab = $(e.currentTarget).attr('data-activate-tab');
+            $('.summernote-tab').hide();
+            $('#' + tab).show();
+          });
+
+          $imageItems.on('click', function (e) {
+            var url = $(e.currentTarget).attr('data-image-url');
+            toggleBtn($imageBtn, url);
+            return $imageUrl.val(url);          
+          });
+
           $imageDialog.one('shown.bs.modal', function () {
             // Cloning imageInput to clear element.
             $imageInput.replaceWith($imageInput.clone()
@@ -4894,7 +4927,7 @@
               .val('')
             );
 
-            $('#SummernoteS3Form').fileupload({
+            $('#summernote-s3-form').fileupload({
               forceIframeTransport: true,
               autoUpload: true,
               add: function (event, data) {
@@ -4907,10 +4940,10 @@
                   success: function(retdata) {
                     // after we created our document in rails, it is going to send back JSON of they key,
                     // policy, and signature.  We will put these into our form before it gets submitted to amazon.
-                    $('#SummernoteS3Form').find('input[name=key]').val(retdata.key);
-                    $('#SummernoteS3Form').find('input[name=policy]').val(retdata.policy);
-                    $('#SummernoteS3Form').find('input[name=signature]').val(retdata.signature);
-                    $('#SummernoteS3Form').find('input[name=AWSAccessKeyId]').val(retdata.AWSAccessKeyId);
+                    $('#summernote-s3-form').find('input[name=key]').val(retdata.key);
+                    $('#summernote-s3-form').find('input[name=policy]').val(retdata.policy);
+                    $('#summernote-s3-form').find('input[name=signature]').val(retdata.signature);
+                    $('#summernote-s3-form').find('input[name=AWSAccessKeyId]').val(retdata.AWSAccessKeyId);
                   }
                 });
 
@@ -4919,14 +4952,14 @@
               send: function(e, data) {
                 // show a loading spinner because now the form will be submitted to amazon, 
                 // and the file will be directly uploaded there, via an iframe in the background. 
-                $('#SummernoteS3Loading').show();
+                $('#summernote-s3-loading').show();
               },
               fail: function(e, data) {
                 console.log('fail');
                 console.log(data);
               },
               done: function (event, data) {
-                $('#SummernoteS3Loading').hide();
+                $('#summernote-s3-loading').hide();
                 var url = data.url + data.formData[0].value;
                 toggleBtn($imageBtn, url);
                 return $imageUrl.val(url);
@@ -4942,6 +4975,8 @@
 
           }).one('hidden.bs.modal', function () {
             $imageBtn.off('click');
+            $imageItems.off('click');
+            $menuItems.off('click');
 
             if (deferred.state() === 'pending') {
               deferred.reject();
@@ -6125,22 +6160,39 @@
 
 
         if (options.s3) {
-          var body = '<form id="SummernoteS3Form" method="post" enctype="multipart/form-data" action="' 
-            + options.s3BucketUrl +
-            '">' +
-            '<input type="hidden" name="key"></input>' +
-            '<input type="hidden" name="AWSAccessKeyId"></input>' +
-            '<input type="hidden" name="acl" value="private"></input>' +
-            '<input type="hidden" name="success_action_status" value="200"></input>' +
-            '<input type="hidden" name="policy"></input>' +
-            '<input type="hidden" name="signature"></input>' +
-            '<input type="file" name="file"></input>' +
-          '</form>' +
-          '<div class="form-group row-fluid">' +
-            '<label>Image URL</label>' +
-            '<input class="note-image-url form-control span12" type="12"></input>' +
+          var body = 
+          '<div class="summernote-menu">' +
+            '<ul>'+
+              '<li data-activate-tab="summernote-tab-1">Media library</li>' +
+              '<li data-activate-tab="summernote-tab-2">Upload new</li>' +
+            '</ul>' +
           '</div>' +
-          '<div id="SummernoteS3Loading" style="display: none;">Uploading...</div>';
+          '<div class="summernote-tabs">' +
+            '<div class="summernote-tab" id="summernote-tab-1">' +
+              '<span>Media library</span>' +
+              '<div class="summernote-images">' +
+              '</div>' +
+            '</div>' +
+            '<div class="summernote-tab" id="summernote-tab-2">' +
+              '<span>Upload</span>' +
+              '<form id="summernote-s3-form" method="post" enctype="multipart/form-data" action="'+ options.s3BucketUrl +'">' +
+                '<input type="hidden" name="key"></input>' +
+                '<input type="hidden" name="AWSAccessKeyId"></input>' +
+                '<input type="hidden" name="acl" value="private"></input>' +
+                '<input type="hidden" name="success_action_status" value="200"></input>' +
+                '<input type="hidden" name="policy"></input>' +
+                '<input type="hidden" name="signature"></input>' +
+                '<input class="note-image-input" type="file" name="files" accept="image/*" type="file" name="file"></input>' +
+                imageLimitation +
+              '</form>' +
+              '<div id="summernote-s3-loading" style="display: none;">Uploading...</div>' +
+            '</div>' +
+          '</div>';
+        var footer = '<div class="summernote-selected-url">' +
+                      '<label>Image URL</label>' +
+                      '<input class="note-image-url form-control"></input>' +
+                      '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>' +
+                    '</div>';
         } else {        
           var body = '<form class="note-modal-form">' +
                       '<div class="form-group row-fluid note-group-select-from-files">' +
@@ -6153,8 +6205,8 @@
                        '<input class="note-image-url form-control span12" type="text" />' +
                      '</div>' + 
                      '</form>';
-        }
         var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
+        }
         return tplDialog('note-image-dialog', lang.image.insert, body, footer);
       },
 
