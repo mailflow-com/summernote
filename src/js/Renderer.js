@@ -609,7 +609,7 @@ define([
                 '<input type="hidden" name="success_action_status" value="200"></input>' +
                 '<input type="hidden" name="policy"></input>' +
                 '<input type="hidden" name="signature"></input>' +
-                '<input class="note-image-input" type="file" name="files" accept="image/*" type="file" name="file"></input>' +
+                '<input class="note-image-input" type="file" name="file" accept="image/*"></input>' +
                 imageLimitation +
               '</form>' +
               '<div id="summernote-s3-loading" style="display: none;">Uploading...</div>' +
@@ -617,7 +617,7 @@ define([
           '</div>';
         var footer = '<div class="summernote-selected-url">' +
                       '<label>Image URL</label>' +
-                      '<input class="note-image-url form-control"></input>' +
+                      '<input class="note-image-url type="text" form-control"></input>' +
                       '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>' +
                     '</div>';
         } else {        

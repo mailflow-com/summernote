@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-04-13T15:26Z
+ * Date: 2015-04-14T09:18Z
  */
 (function (factory) {
   /* global define */
@@ -4888,22 +4888,38 @@
           var $menuItems = $dialog.find('.summernote-menu li');
           var $imagesDiv = $dialog.find('.summernote-images');
 
-          var mediaImages = options.s3FetchExisting();
-          var images = '';
-          if (mediaImages.length > 0) {
-            var i;
-            for (i = 0 ; i < mediaImages.length; i++) {
-              var im = mediaImages[i];
-              images += '<div style="background-image: url(\''+ im.url +'\');" data-image-url="'+ im.url +'" class="summernote-image"></div>';
-            }
-            $dialog.find('#summernote-tab-1').show();
-          } else {
-            images = 'No images';
-            $dialog.find('#summernote-tab-2').show();
+          var promise = options.s3FetchExisting();
+          
+          var imageClicked = function (e) {
+            var url = $(e.currentTarget).attr('data-image-url');
+            toggleBtn($imageBtn, url);
+            return $imageUrl.val(url);    
           }
-          $imagesDiv.empty().append(images);
 
-          $imageItems = $dialog.find('.summernote-image');
+          promise.then(function(response){
+            var mediaImages = response.data.images;
+            var images = '';
+            $imagesDiv.empty();
+            if (mediaImages.length > 0) {
+              var i;
+              for (i = 0 ; i < mediaImages.length; i++) {
+                var im = mediaImages[i];
+                d = $('<div>');
+                d.attr({
+                  style: "background-image: url('"+im.url+"');",
+                  'data-image-url': im.url,
+                  class: 'summernote-image'
+                });
+                $images.append(d);
+                d.on('click', imageClicked);
+              }
+              $dialog.find('#summernote-tab-1').show();
+            } else {
+              $dialog.find('#summernote-tab-2').show();
+              $imagesDiv.append('No images');
+            }
+          });
+
 
           $menuItems.on('click', function (e) {
             var tab = $(e.currentTarget).attr('data-activate-tab');
@@ -4911,22 +4927,7 @@
             $('#' + tab).show();
           });
 
-          $imageItems.on('click', function (e) {
-            var url = $(e.currentTarget).attr('data-image-url');
-            toggleBtn($imageBtn, url);
-            return $imageUrl.val(url);          
-          });
-
           $imageDialog.one('shown.bs.modal', function () {
-            // Cloning imageInput to clear element.
-            $imageInput.replaceWith($imageInput.clone()
-              .on('change', function () {
-                deferred.resolve(this.files || this.value);
-                $imageDialog.modal('hide');
-              })
-              .val('')
-            );
-
             $('#summernote-s3-form').fileupload({
               forceIframeTransport: true,
               autoUpload: true,
@@ -6182,7 +6183,7 @@
                 '<input type="hidden" name="success_action_status" value="200"></input>' +
                 '<input type="hidden" name="policy"></input>' +
                 '<input type="hidden" name="signature"></input>' +
-                '<input class="note-image-input" type="file" name="files" accept="image/*" type="file" name="file"></input>' +
+                '<input class="note-image-input" type="file" name="file" accept="image/*"></input>' +
                 imageLimitation +
               '</form>' +
               '<div id="summernote-s3-loading" style="display: none;">Uploading...</div>' +
@@ -6190,7 +6191,7 @@
           '</div>';
         var footer = '<div class="summernote-selected-url">' +
                       '<label>Image URL</label>' +
-                      '<input class="note-image-url form-control"></input>' +
+                      '<input class="note-image-url type="text" form-control"></input>' +
                       '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>' +
                     '</div>';
         } else {        

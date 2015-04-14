@@ -55,22 +55,38 @@ define(function () {
           var $menuItems = $dialog.find('.summernote-menu li');
           var $imagesDiv = $dialog.find('.summernote-images');
 
-          var mediaImages = options.s3FetchExisting();
-          var images = '';
-          if (mediaImages.length > 0) {
-            var i;
-            for (i = 0 ; i < mediaImages.length; i++) {
-              var im = mediaImages[i];
-              images += '<div style="background-image: url(\''+ im.url +'\');" data-image-url="'+ im.url +'" class="summernote-image"></div>';
-            }
-            $dialog.find('#summernote-tab-1').show();
-          } else {
-            images = 'No images';
-            $dialog.find('#summernote-tab-2').show();
+          var promise = options.s3FetchExisting();
+          
+          var imageClicked = function (e) {
+            var url = $(e.currentTarget).attr('data-image-url');
+            toggleBtn($imageBtn, url);
+            return $imageUrl.val(url);    
           }
-          $imagesDiv.empty().append(images);
 
-          $imageItems = $dialog.find('.summernote-image');
+          promise.then(function(response){
+            var mediaImages = response.data.images;
+            var images = '';
+            $imagesDiv.empty();
+            if (mediaImages.length > 0) {
+              var i;
+              for (i = 0 ; i < mediaImages.length; i++) {
+                var im = mediaImages[i];
+                d = $('<div>');
+                d.attr({
+                  style: "background-image: url('"+im.url+"');",
+                  'data-image-url': im.url,
+                  class: 'summernote-image'
+                });
+                $images.append(d);
+                d.on('click', imageClicked);
+              }
+              $dialog.find('#summernote-tab-1').show();
+            } else {
+              $dialog.find('#summernote-tab-2').show();
+              $imagesDiv.append('No images');
+            }
+          });
+
 
           $menuItems.on('click', function (e) {
             var tab = $(e.currentTarget).attr('data-activate-tab');
@@ -78,22 +94,7 @@ define(function () {
             $('#' + tab).show();
           });
 
-          $imageItems.on('click', function (e) {
-            var url = $(e.currentTarget).attr('data-image-url');
-            toggleBtn($imageBtn, url);
-            return $imageUrl.val(url);          
-          });
-
           $imageDialog.one('shown.bs.modal', function () {
-            // Cloning imageInput to clear element.
-            $imageInput.replaceWith($imageInput.clone()
-              .on('change', function () {
-                deferred.resolve(this.files || this.value);
-                $imageDialog.modal('hide');
-              })
-              .val('')
-            );
-
             $('#summernote-s3-form').fileupload({
               forceIframeTransport: true,
               autoUpload: true,
