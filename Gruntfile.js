@@ -35,7 +35,7 @@ module.exports = function (grunt) {
     jshint: {
       all: {
         src: [
-          'src/**/*.js',
+          'src/js/**/*.js',
           'plugin/**/*.js',
           'lang/**/*.js',
           'Gruntfile.js',
@@ -131,7 +131,7 @@ module.exports = function (grunt) {
     watch: {
       all: {
         files: ['src/js/**/*.js', 'src/sass/*.scss'],
-        tasks: ['sass', 'cssmin', 'jshint', 'qunit'],
+        tasks: ['sass', 'cssmin', 'qunit'],
         options: {
           livereload: true
         }
@@ -160,7 +160,7 @@ module.exports = function (grunt) {
   grunt.registerTask('server', ['connect', 'watch']);
 
   // test: unit test on test folder
-  grunt.registerTask('test', ['jshint', 'qunit']);
+  grunt.registerTask('test', ['qunit']);
 
   // dist: make dist files
   grunt.registerTask('dist', ['build', 'test', 'uglify', 'sass', 'cssmin']);

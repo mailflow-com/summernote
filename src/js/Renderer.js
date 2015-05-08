@@ -97,12 +97,10 @@ define([
                      '<h4 class="modal-title">' + title + '</h4>' +
                    '</div>' : ''
                    ) +
-                   '<form class="note-modal-form">' +
                      '<div class="modal-body">' + body + '</div>' +
                      (footer ?
                      '<div class="modal-footer">' + footer + '</div>' : ''
                      ) +
-                   '</form>' +
                  '</div>' +
                '</div>' +
              '</div>';
@@ -587,21 +585,61 @@ define([
           imageLimitation = '<small>' + lang.image.maximumFileSize + ' : ' + readableSize + '</small>';
         }
 
-        var body = '<div class="form-group row-fluid note-group-select-from-files">' +
-                     '<label>' + lang.image.selectFromFiles + '</label>' +
-                     '<input class="note-image-input" type="file" name="files" accept="image/*" multiple="multiple" />' +
-                     imageLimitation +
-                   '</div>' +
-                   '<div class="form-group row-fluid">' +
-                     '<label>' + lang.image.url + '</label>' +
-                     '<input class="note-image-url form-control span12" type="text" />' +
-                   '</div>';
+
+        if (options.s3) {
+          var body = 
+          '<div class="summernote-menu">' +
+            '<ul>'+
+              '<li data-activate-tab="summernote-tab-1">Media library</li>' +
+              '<li data-activate-tab="summernote-tab-2">Upload new</li>' +
+            '</ul>' +
+          '</div>' +
+          '<div class="summernote-tabs">' +
+            '<div class="summernote-tab" id="summernote-tab-1">' +
+              '<span>Media library</span>' +
+              '<div class="summernote-images">' +
+              '</div>' +
+            '</div>' +
+            '<div class="summernote-tab" id="summernote-tab-2">' +
+              '<span>Upload</span>' +
+              '<form id="summernote-s3-form" method="post" enctype="multipart/form-data" action="'+ options.s3BucketUrl +'">' +
+                '<input type="hidden" name="key"></input>' +
+                '<input type="hidden" name="AWSAccessKeyId"></input>' +
+                '<input type="hidden" name="acl" value="private"></input>' +
+                '<input type="hidden" name="success_action_status" value="200"></input>' +
+                '<input type="hidden" name="policy"></input>' +
+                '<input type="hidden" name="signature"></input>' +
+                '<input class="note-image-input" type="file" name="file" accept="image/*"></input>' +
+                imageLimitation +
+              '</form>' +
+              '<div id="summernote-s3-loading" style="display: none;">Uploading...</div>' +
+            '</div>' +
+          '</div>';
+        var footer = '<div class="summernote-selected-url">' +
+                      '<label>Image URL</label>' +
+                      '<input class="note-image-url type="text" form-control"></input>' +
+                      '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>' +
+                    '</div>';
+        } else {        
+          var body = '<form class="note-modal-form">' +
+                      '<div class="form-group row-fluid note-group-select-from-files">' +
+                       '<label>' + lang.image.selectFromFiles + '</label>' +
+                       '<input class="note-image-input" type="file" name="files" accept="image/*" multiple="multiple" />' +
+                       imageLimitation +
+                     '</div>' +
+                     '<div class="form-group row-fluid">' +
+                       '<label>' + lang.image.url + '</label>' +
+                       '<input class="note-image-url form-control span12" type="text" />' +
+                     '</div>' + 
+                     '</form>';
         var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
+        }
         return tplDialog('note-image-dialog', lang.image.insert, body, footer);
       },
 
       link: function (lang, options) {
-        var body = '<div class="form-group row-fluid">' +
+        var body = '<form class="note-modal-form">' +
+                   '<div class="form-group row-fluid">' +
                      '<label>' + lang.link.textToDisplay + '</label>' +
                      '<input class="note-link-text form-control span12" type="text" />' +
                    '</div>' +
@@ -619,20 +657,23 @@ define([
                          lang.link.openInNewWindow +
                        '</label>' +
                      '</div>' : ''
-                   );
+                   ) +
+                   '</form>';
         var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
         return tplDialog('note-link-dialog', lang.link.insert, body, footer);
       },
 
       help: function (lang, options) {
-        var body = '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + lang.shortcut.close + '</a>' +
+        var body = '<form class="note-modal-form">' +
+                   '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + lang.shortcut.close + '</a>' +
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
                      '<a href="//summernote.org/" target="_blank">Summernote @VERSION</a> · ' +
                      '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>' +
-                   '</p>';
+                   '</p>' +
+                   '</form>';
         return tplDialog('note-help-dialog', '', body, '');
       }
     };

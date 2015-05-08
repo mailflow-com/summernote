@@ -335,4 +335,24 @@
       background: yellow;
       filter: alpha(opacity=70); }
 
+/* Images
+ ------------------------------------------*/
+.summernote-tabs {
+  display: inline-block; }
+  .summernote-tabs .summernote-tab {
+    display: none; }
+
+.summernote-menu {
+  display: inline-block; }
+
+.summernote-image {
+  height: 150px;
+  width: 150px;
+  background-position: center center;
+  display: inline-block; }
+
+.summernote-selected-url input {
+  width: 80% !important;
+  float: left !important; }
+
 /*# sourceMappingURL=summernote.css.map */
