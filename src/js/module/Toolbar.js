@@ -40,7 +40,7 @@ define([
      */
     this.deactivate = function ($toolbar) {
       $toolbar.find('button')
-              .not('button[data-event="codeview"]')
+              .not('button[data-event="codeview"] , button[data-event="showImageDialog"]')
               .addClass('disabled');
     };
 
