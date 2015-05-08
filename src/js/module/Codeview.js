@@ -19,6 +19,15 @@ define([
    */
   var Codeview = function (handler) {
 
+    this.injectHtml = function (layoutInfo, html) {
+      var isCodeview = handler.invoke('codeview.isActivated', layoutInfo);
+      if (isCodeview && agent.hasCodeMirror) {
+        var cmEditor = layoutInfo.codable().data('cmEditor');
+        cmEditor.setValue(html);
+        cmEditor.save();
+      }
+    };
+
     this.sync = function (layoutInfo) {
       var isCodeview = handler.invoke('codeview.isActivated', layoutInfo);
       if (isCodeview && agent.hasCodeMirror) {
