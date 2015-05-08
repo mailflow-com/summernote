@@ -237,7 +237,9 @@ define([
           layoutInfo.editable().focus();
         }
       }
-
+      if (!!options.codemirrorOnly) {
+        eventHandler.modules.codeview.activate(layoutInfo);
+      }
       return this;
     },
 

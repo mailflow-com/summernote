@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-04-14T09:18Z
+ * Date: 2015-05-08T13:34Z
  */
 (function (factory) {
   /* global define */
@@ -4078,7 +4078,7 @@
      */
     this.deactivate = function ($toolbar) {
       $toolbar.find('button')
-              .not('button[data-event="codeview"]')
+              .not('button[data-event="codeview"] , button[data-event="showImageDialog"]')
               .addClass('disabled');
     };
 
@@ -4445,6 +4445,15 @@
    * @class Codeview
    */
   var Codeview = function (handler) {
+
+    this.injectHtml = function (layoutInfo, html) {
+      var isCodeview = handler.invoke('codeview.isActivated', layoutInfo);
+      if (isCodeview && agent.hasCodeMirror) {
+        var cmEditor = layoutInfo.codable().data('cmEditor');
+        cmEditor.setValue(html);
+        cmEditor.save();
+      }
+    };
 
     this.sync = function (layoutInfo) {
       var isCodeview = handler.invoke('codeview.isActivated', layoutInfo);
@@ -4854,12 +4863,17 @@
       this.showImageDialog($editable, $dialog, $editor).then(function (data) {
         handler.invoke('editor.restoreRange', $editable);
 
-        if (typeof data === 'string') {
-          // image url
-          handler.invoke('editor.insertImage', $editable, data);
+        var codeViewActive = handler.modules.codeview.isActivated(layoutInfo);
+        if (!codeViewActive) {
+          if (typeof data === 'string') {
+            // image url
+            handler.invoke('editor.insertImage', $editable, data);
+          } else {
+            // array of files
+            handler.insertImages(layoutInfo, data);
+          }
         } else {
-          // array of files
-          handler.insertImages(layoutInfo, data);
+          handler.modules.codeview.injectHtml(layoutInfo, '<img src="'+data+'"></img>');
         }
       }).fail(function () {
         handler.invoke('editor.restoreRange', $editable);
@@ -4910,7 +4924,7 @@
                   'data-image-url': im.url,
                   class: 'summernote-image'
                 });
-                $images.append(d);
+                $imagesDiv.append(d);
                 d.on('click', imageClicked);
               }
               $dialog.find('#summernote-tab-1').show();
@@ -4976,7 +4990,7 @@
 
           }).one('hidden.bs.modal', function () {
             $imageBtn.off('click');
-            $imageItems.off('click');
+            if (typeof $imageItems != 'undefined') $imageItems.off('click');
             $menuItems.off('click');
 
             if (deferred.state() === 'pending') {
@@ -6797,7 +6811,9 @@
           layoutInfo.editable().focus();
         }
       }
-
+      if (!!options.codemirrorOnly) {
+        eventHandler.modules.codeview.activate(layoutInfo);
+      }
       return this;
     },
 

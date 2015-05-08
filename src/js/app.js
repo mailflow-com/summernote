@@ -47,6 +47,7 @@ require([
     focus: true,                  // set focus editable area after summernote loaded
     tabsize: 2,                   // size of tab
     placeholder: 'Type your message here...', // set editable area's placeholder text
+    codemirrorOnly: true,
     codemirror: {                 // code mirror options
       mode: 'text/html',
       htmlMode: true,
