@@ -264,7 +264,7 @@ define([
      * @param {String} [html] - HTML contents(optional, set)
      * @return {this|String} - context(set) or HTML contents of note(get).
      */
-    code: function (html) {
+    code: function (html, htmlAsString) {
       // get the HTML contents of note
       if (html === undefined) {
         var $holder = this.first();
@@ -289,7 +289,11 @@ define([
         var layoutInfo = renderer.layoutInfoFromHolder($(holder));
         var $editable = layoutInfo && layoutInfo.editable();
         if ($editable) {
-          $editable.html(html);
+          if (!!htmlAsString) {
+            window['codeviewStash'] = html;
+          } else {
+            $editable.html(html);
+          }
         }
       });
 
