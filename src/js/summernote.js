@@ -237,9 +237,11 @@ define([
           layoutInfo.editable().focus();
         }
       }
-      if (!!options.codemirrorOnly) {
+
+      this.startCodeMirror = function () {
         eventHandler.modules.codeview.activate(layoutInfo);
-      }
+      };
+
       return this;
     },
 

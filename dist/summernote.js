@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-05-11T10:40Z
+ * Date: 2015-05-11T10:44Z
  */
 (function (factory) {
   /* global define */
@@ -6820,9 +6820,11 @@
           layoutInfo.editable().focus();
         }
       }
-      if (!!options.codemirrorOnly) {
+
+      this.startCodeMirror = function () {
         eventHandler.modules.codeview.activate(layoutInfo);
-      }
+      };
+
       return this;
     },
 
