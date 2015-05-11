@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-05-11T09:30Z
+ * Date: 2015-05-11T10:40Z
  */
 (function (factory) {
   /* global define */
@@ -2193,7 +2193,7 @@
 
       disableLinkTarget: false,     // hide link Target Checkbox
       disableDragAndDrop: false,    // disable drag and drop event
-      disableResizeEditor: false,   // disable resizing editor
+      disableResizeEditor: true,   // disable resizing editor
 
       shortcuts: true,              // enable keyboard shortcuts
 
@@ -4882,7 +4882,7 @@
             handler.insertImages(layoutInfo, data);
           }
         } else {
-          handler.modules.codeview.replaceSelection(layoutInfo, '<img src="'+data+'"></img>');
+          handler.modules.codeview.replaceSelection(layoutInfo, '<img src="'+data+'"/>');
         }
       }).fail(function () {
         handler.invoke('editor.restoreRange', $editable);

@@ -31,7 +31,7 @@ define(function () {
             handler.insertImages(layoutInfo, data);
           }
         } else {
-          handler.modules.codeview.replaceSelection(layoutInfo, '<img src="'+data+'"></img>');
+          handler.modules.codeview.replaceSelection(layoutInfo, '<img src="'+data+'"/>');
         }
       }).fail(function () {
         handler.invoke('editor.restoreRange', $editable);
