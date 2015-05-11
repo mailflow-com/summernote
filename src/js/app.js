@@ -34,19 +34,20 @@ require([
     s3: true,
     s3TokenUrl: 'http://localhost:3001/internal/images',
     s3BucketUrl: 'https://mailflow-image-uploads.s3.amazonaws.com',
-    s3FetchExisting: function () {
-      return [
+    s3FetchExisting: function(){return new Promise(function (resolve, reject) {
+      resolve({data:{images:[
       {url:'https://s3.amazonaws.com/mailflow-image-uploads/4f4c7009-1b08-4593-90b8-6a0e80d20444/pear2.jpg'},
       {url: 'http://images5.fanpop.com/image/photos/30800000/-Random-random-30843841-1920-1080.jpg'},
       {url: 'http://www.shockmansion.com/wp-content/myimages/2013/02/Posted-On-Shock-Mansion-5327.jpg'},
       {url: 'http://i.telegraph.co.uk/multimedia/archive/01838/lottery_1838360b.jpg'},
       {url: 'http://www.mathsisfun.com/data/images/random-variable-1.gif'}
-      ];
-    },
+      ]}});
+    });},
     height: 300,                  // set editable area's height
     focus: true,                  // set focus editable area after summernote loaded
     tabsize: 2,                   // size of tab
     placeholder: 'Type your message here...', // set editable area's placeholder text
+    codemirrorOnly: true,
     codemirror: {                 // code mirror options
       mode: 'text/html',
       htmlMode: true,

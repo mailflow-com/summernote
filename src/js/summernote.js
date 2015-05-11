@@ -238,6 +238,10 @@ define([
         }
       }
 
+      this.startCodeMirror = function () {
+        eventHandler.modules.codeview.activate(layoutInfo);
+      };
+
       return this;
     },
 

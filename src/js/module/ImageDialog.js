@@ -21,12 +21,17 @@ define(function () {
       this.showImageDialog($editable, $dialog, $editor).then(function (data) {
         handler.invoke('editor.restoreRange', $editable);
 
-        if (typeof data === 'string') {
-          // image url
-          handler.invoke('editor.insertImage', $editable, data);
+        var codeViewActive = handler.modules.codeview.isActivated(layoutInfo);
+        if (!codeViewActive) {
+          if (typeof data === 'string') {
+            // image url
+            handler.invoke('editor.insertImage', $editable, data);
+          } else {
+            // array of files
+            handler.insertImages(layoutInfo, data);
+          }
         } else {
-          // array of files
-          handler.insertImages(layoutInfo, data);
+          handler.modules.codeview.replaceSelection(layoutInfo, '<img src="'+data+'"/>');
         }
       }).fail(function () {
         handler.invoke('editor.restoreRange', $editable);
@@ -77,7 +82,7 @@ define(function () {
                   'data-image-url': im.url,
                   class: 'summernote-image'
                 });
-                $images.append(d);
+                $imagesDiv.append(d);
                 d.on('click', imageClicked);
               }
               $dialog.find('#summernote-tab-1').show();
@@ -143,7 +148,7 @@ define(function () {
 
           }).one('hidden.bs.modal', function () {
             $imageBtn.off('click');
-            $imageItems.off('click');
+            if (typeof $imageItems != 'undefined') $imageItems.off('click');
             $menuItems.off('click');
 
             if (deferred.state() === 'pending') {
