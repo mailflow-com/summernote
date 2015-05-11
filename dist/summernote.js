@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-05-08T13:34Z
+ * Date: 2015-05-11T09:30Z
  */
 (function (factory) {
   /* global define */
@@ -4446,6 +4446,15 @@
    */
   var Codeview = function (handler) {
 
+    this.replaceSelection = function (layoutInfo, html) {
+      var isCodeview = handler.invoke('codeview.isActivated', layoutInfo);
+      if (isCodeview && agent.hasCodeMirror) {
+        var cmEditor = layoutInfo.codable().data('cmEditor');
+        cmEditor.replaceSelection(html);
+        cmEditor.save();
+      };
+    };
+
     this.injectHtml = function (layoutInfo, html) {
       var isCodeview = handler.invoke('codeview.isActivated', layoutInfo);
       if (isCodeview && agent.hasCodeMirror) {
@@ -4873,7 +4882,7 @@
             handler.insertImages(layoutInfo, data);
           }
         } else {
-          handler.modules.codeview.injectHtml(layoutInfo, '<img src="'+data+'"></img>');
+          handler.modules.codeview.replaceSelection(layoutInfo, '<img src="'+data+'"></img>');
         }
       }).fail(function () {
         handler.invoke('editor.restoreRange', $editable);
