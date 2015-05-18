@@ -81,7 +81,11 @@ define([
 
       var options = $editor.data('options');
 
-      $codable.val(dom.html($editable, options.prettifyHtml));
+      if (!!window['codeviewStash']) {
+        $codable.val(window['codeviewStash']);
+      } else {
+        $codable.val(dom.html($editable, options.prettifyHtml));
+      }
       $codable.height($editable.height());
 
       handler.invoke('toolbar.updateCodeview', $toolbar, true);

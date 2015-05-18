@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-05-11T10:44Z
+ * Date: 2015-05-11T13:38Z
  */
 (function (factory) {
   /* global define */
@@ -4508,7 +4508,11 @@
 
       var options = $editor.data('options');
 
-      $codable.val(dom.html($editable, options.prettifyHtml));
+      if (!!window['codeviewStash']) {
+        $codable.val(window['codeviewStash']);
+      } else {
+        $codable.val(dom.html($editable, options.prettifyHtml));
+      }
       $codable.height($editable.height());
 
       handler.invoke('toolbar.updateCodeview', $toolbar, true);
@@ -6847,7 +6851,7 @@
      * @param {String} [html] - HTML contents(optional, set)
      * @return {this|String} - context(set) or HTML contents of note(get).
      */
-    code: function (html) {
+    code: function (html, htmlAsString) {
       // get the HTML contents of note
       if (html === undefined) {
         var $holder = this.first();
@@ -6872,7 +6876,11 @@
         var layoutInfo = renderer.layoutInfoFromHolder($(holder));
         var $editable = layoutInfo && layoutInfo.editable();
         if ($editable) {
-          $editable.html(html);
+          if (!!htmlAsString) {
+            window['codeviewStash'] = html;
+          } else {
+            $editable.html(html);
+          }
         }
       });
 
