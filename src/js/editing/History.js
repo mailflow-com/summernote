@@ -12,7 +12,6 @@ define(['summernote/core/range'], function (range) {
     var makeSnapshot = function () {
       var rng = range.create();
       var emptyBookmark = {s: {path: [], offset: 0}, e: {path: [], offset: 0}};
-
       return {
         contents: $editable.html(),
         bookmark: (rng ? rng.bookmark(editable) : emptyBookmark)
@@ -60,7 +59,9 @@ define(['summernote/core/range'], function (range) {
       }
 
       // Create new snapshot and push it to the end
-      stack.push(makeSnapshot());
+      var snapshot = makeSnapshot();
+      var blank = '<div style="display:none" id="fileUpload"></div>';
+      if (snapshot.contents != blank) stack.push(snapshot);
     };
 
     // Create first undo stack
