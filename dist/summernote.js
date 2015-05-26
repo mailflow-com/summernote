@@ -4078,7 +4078,7 @@
      */
     this.deactivate = function ($toolbar) {
       $toolbar.find('button')
-              .not('button[data-event="codeview"] , button[data-event="showImageDialog"]')
+              .not('button[data-event="codeview"] , button[data-event="showImageDialog"], button[data-event="fullscreen"]')
               .addClass('disabled');
     };
 
