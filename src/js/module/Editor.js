@@ -634,6 +634,10 @@ define([
       afterCommand($editable);
     };
 
+    this.imageLink = function ($editable) {
+      debugger;
+    };
+
     /**
      * float me
      *

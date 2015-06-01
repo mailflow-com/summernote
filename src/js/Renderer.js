@@ -411,6 +411,12 @@ define([
           value: ''
         });
 
+        var linkButton = tplIconButton(options.iconPrefix + 'link', {
+          title: lang.image.linkEdit,
+          event: 'imageLink',
+          value: ''
+        });
+
         var removeButton = tplIconButton(options.iconPrefix + 'trash-o', {
           title: lang.image.remove,
           event: 'removeMedia',
@@ -420,6 +426,7 @@ define([
         var content = '<div class="btn-group">' + fullButton + halfButton + quarterButton + '</div>' +
                       '<div class="btn-group">' + leftButton + rightButton + justifyButton + '</div>' +
                       '<div class="btn-group">' + roundedButton + circleButton + thumbnailButton + noneButton + '</div>' +
+                      '<div class="btn-group">' + linkButton + '</div>' +
                       '<div class="btn-group">' + removeButton + '</div>';
         return tplPopover('note-image-popover', content);
       };

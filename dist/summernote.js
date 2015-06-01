@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-05-11T13:38Z
+ * Date: 2015-06-01T11:04Z
  */
 (function (factory) {
   /* global define */
@@ -2406,6 +2406,7 @@
           maximumFileSize: 'Maximum file size',
           maximumFileSizeError: 'Maximum file size exceeded.',
           url: 'Image URL',
+          linkEdit: 'Add/Edit link',
           remove: 'Remove Image'
         },
         link: {
@@ -2535,6 +2536,7 @@
           display: 'none'
         }).appendTo(document.body).attr({
           'src': sUrl,
+          'alt': '',
           'data-filename': filename
         });
       }).promise();
@@ -2618,7 +2620,6 @@
     var makeSnapshot = function () {
       var rng = range.create();
       var emptyBookmark = {s: {path: [], offset: 0}, e: {path: [], offset: 0}};
-
       return {
         contents: $editable.html(),
         bookmark: (rng ? rng.bookmark(editable) : emptyBookmark)
@@ -2666,7 +2667,9 @@
       }
 
       // Create new snapshot and push it to the end
-      stack.push(makeSnapshot());
+      var snapshot = makeSnapshot();
+      var blank = '<div style="display:none" id="fileUpload"></div>';
+      if (snapshot.contents != blank) stack.push(snapshot);
     };
 
     // Create first undo stack
@@ -3776,6 +3779,10 @@
       afterCommand($editable);
     };
 
+    this.imageLink = function ($editable) {
+      debugger;
+    };
+
     /**
      * float me
      *
@@ -4078,7 +4085,7 @@
      */
     this.deactivate = function ($toolbar) {
       $toolbar.find('button')
-              .not('button[data-event="codeview"] , button[data-event="showImageDialog"], button[data-event="fullscreen"]')
+              .not('button[data-event="codeview"] , button[data-event="showImageDialog"]')
               .addClass('disabled');
     };
 
@@ -4886,7 +4893,7 @@
             handler.insertImages(layoutInfo, data);
           }
         } else {
-          handler.modules.codeview.replaceSelection(layoutInfo, '<img src="'+data+'"/>');
+          handler.modules.codeview.replaceSelection(layoutInfo, '<img alt="" src="'+data+'"/>');
         }
       }).fail(function () {
         handler.invoke('editor.restoreRange', $editable);
@@ -6012,6 +6019,12 @@
           value: ''
         });
 
+        var linkButton = tplIconButton(options.iconPrefix + 'link', {
+          title: lang.image.linkEdit,
+          event: 'imageLink',
+          value: ''
+        });
+
         var removeButton = tplIconButton(options.iconPrefix + 'trash-o', {
           title: lang.image.remove,
           event: 'removeMedia',
@@ -6021,6 +6034,7 @@
         var content = '<div class="btn-group">' + fullButton + halfButton + quarterButton + '</div>' +
                       '<div class="btn-group">' + leftButton + rightButton + justifyButton + '</div>' +
                       '<div class="btn-group">' + roundedButton + circleButton + thumbnailButton + noneButton + '</div>' +
+                      '<div class="btn-group">' + linkButton + '</div>' +
                       '<div class="btn-group">' + removeButton + '</div>';
         return tplPopover('note-image-popover', content);
       };

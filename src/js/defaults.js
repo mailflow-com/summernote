@@ -263,6 +263,7 @@ define('summernote/defaults', function () {
           maximumFileSize: 'Maximum file size',
           maximumFileSizeError: 'Maximum file size exceeded.',
           url: 'Image URL',
+          linkEdit: 'Add/Edit link',
           remove: 'Remove Image'
         },
         link: {

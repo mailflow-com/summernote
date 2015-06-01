@@ -53,6 +53,7 @@ define('summernote/core/async', function () {
           display: 'none'
         }).appendTo(document.body).attr({
           'src': sUrl,
+          'alt': '',
           'data-filename': filename
         });
       }).promise();
