@@ -836,6 +836,8 @@ define([
         container = splitRoot.parentNode;
       }
 
+      if (splitRoot && splitRoot.localName == 'img') splitRoot = undefined;
+
       // split with splitTree
       var pivot = splitRoot && splitTree(splitRoot, point, isInline);
 

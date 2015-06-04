@@ -13,6 +13,7 @@ define(function () {
       $btn.attr('disabled', !isEnable);
     };
 
+
     /**
      * Show link dialog and set event handlers on dialog controls.
      *
@@ -32,6 +33,13 @@ define(function () {
         $openInNewWindow = $linkDialog.find('input[type=checkbox]');
 
         $linkDialog.one('shown.bs.modal', function () {
+          // hide or show the link text attribute
+          if (linkInfo.imageLink) {
+            $('.form-group:first-child', 'form.note-modal-form').hide();
+          } else {
+            $('.form-group:hidden', 'form.note-modal-form').show();
+          }
+
           $linkText.val(linkInfo.text);
           $linkName.val(linkInfo.name);
 
@@ -62,6 +70,7 @@ define(function () {
             event.preventDefault();
 
             deferred.resolve({
+              imageLink: linkInfo.imageLink,
               range: linkInfo.range,
               url: $linkUrl.val(),
               text: $linkText.val(),
@@ -92,6 +101,8 @@ define(function () {
           $editable = layoutInfo.editable(),
           $popover = layoutInfo.popover(),
           linkInfo = handler.invoke('editor.getLinkInfo', $editable);
+      
+      linkInfo['imageLink'] = !!layoutInfo.imageLink;
 
       var options = $editor.data('options');
 

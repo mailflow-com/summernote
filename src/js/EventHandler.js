@@ -125,6 +125,14 @@ define([
       showLinkDialog: function (layoutInfo) {
         modules.linkDialog.show(layoutInfo);
       },
+      
+      /**
+       * @param {Object} layoutInfo
+       */
+      showImageLinkDialog: function (layoutInfo) {
+        layoutInfo['imageLink'] = true;
+        modules.linkDialog.show(layoutInfo);
+      },
 
       /**
        * @param {Object} layoutInfo
@@ -216,7 +224,6 @@ define([
         if (hide) {
           $btn.parents('.popover').hide();
         }
-
         if ($.isFunction($.summernote.pluginEvents[eventName])) {
           $.summernote.pluginEvents[eventName](event, modules.editor, layoutInfo, value);
         } else if (modules.editor[eventName]) { // on command

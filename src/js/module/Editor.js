@@ -507,6 +507,7 @@ define([
       }
     };
 
+
     /**
      * create link (command)
      *
@@ -520,6 +521,11 @@ define([
       var isNewWindow = linkInfo.newWindow;
       var linkName = linkInfo.name;
       var rng = linkInfo.range;
+
+      if (linkInfo.imageLink) {
+        var linkNode = $('img', rng.ec)[0];
+      } 
+      
       var isTextChanged = rng.toString() !== linkText;
 
       beforeCommand($editable);
@@ -528,10 +534,18 @@ define([
         linkUrl = options.onCreateLink(linkUrl);
       }
 
+      var linkInner = (linkNode !== undefined) ? linkNode : linkText;
+
       var anchors;
       if (isTextChanged) {
         // Create a new link when text changed.
-        var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
+        var anchor = rng.insertNode($('<A></A>')[0], true);
+
+        $(anchor).append(linkInner).attr({
+          href: linkUrl,
+          'data-mf-imageLink': linkInfo.imageLink
+        });
+
         anchors = [anchor];
       } else {
         anchors = style.styleNodes(rng, {
@@ -634,9 +648,6 @@ define([
       afterCommand($editable);
     };
 
-    this.imageLink = function ($editable) {
-      debugger;
-    };
 
     /**
      * float me

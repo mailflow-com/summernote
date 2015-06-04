@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-06-01T11:04Z
+ * Date: 2015-06-04T15:16Z
  */
 (function (factory) {
   /* global define */
@@ -1256,6 +1256,8 @@
         splitRoot = topAncestor;
         container = splitRoot.parentNode;
       }
+
+      if (splitRoot && splitRoot.localName == 'img') splitRoot = undefined;
 
       // split with splitTree
       var pivot = splitRoot && splitTree(splitRoot, point, isInline);
@@ -3652,6 +3654,7 @@
       }
     };
 
+
     /**
      * create link (command)
      *
@@ -3665,6 +3668,11 @@
       var isNewWindow = linkInfo.newWindow;
       var linkName = linkInfo.name;
       var rng = linkInfo.range;
+
+      if (linkInfo.imageLink) {
+        var linkNode = $('img', rng.ec)[0];
+      } 
+      
       var isTextChanged = rng.toString() !== linkText;
 
       beforeCommand($editable);
@@ -3673,10 +3681,18 @@
         linkUrl = options.onCreateLink(linkUrl);
       }
 
+      var linkInner = (linkNode !== undefined) ? linkNode : linkText;
+
       var anchors;
       if (isTextChanged) {
         // Create a new link when text changed.
-        var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
+        var anchor = rng.insertNode($('<A></A>')[0], true);
+
+        $(anchor).append(linkInner).attr({
+          href: linkUrl,
+          'data-mf-imageLink': linkInfo.imageLink
+        });
+
         anchors = [anchor];
       } else {
         anchors = style.styleNodes(rng, {
@@ -3779,9 +3795,6 @@
       afterCommand($editable);
     };
 
-    this.imageLink = function ($editable) {
-      debugger;
-    };
 
     /**
      * float me
@@ -4235,28 +4248,31 @@
      */
     this.update = function ($popover, styleInfo, isAirMode) {
       button.update($popover, styleInfo);
-
       var $linkPopover = $popover.find('.note-link-popover');
-      if (styleInfo.anchor) {
+
+      if (styleInfo.anchor && $(styleInfo.anchor).attr('data-mf-imagelink') == 'false' ) {
         var $anchor = $linkPopover.find('a');
         var href = $(styleInfo.anchor).attr('href');
         var target = $(styleInfo.anchor).attr('target');
+        
         $anchor.attr('href', href).html(href);
         if (!target) {
           $anchor.removeAttr('target');
         } else {
           $anchor.attr('target', '_blank');
         }
+
         showPopover($linkPopover, posFromPlaceholder(styleInfo.anchor, isAirMode));
+
       } else {
-        $linkPopover.hide();
+        if ($linkPopover) $linkPopover.hide();
       }
 
       var $imagePopover = $popover.find('.note-image-popover');
       if (styleInfo.image) {
         showPopover($imagePopover, posFromPlaceholder(styleInfo.image, isAirMode));
       } else {
-        $imagePopover.hide();
+        if ($imagePopover.hide) $imagePopover.hide();
       }
 
       var $airPopover = $popover.find('.note-air-popover');
@@ -4767,6 +4783,7 @@
       $btn.attr('disabled', !isEnable);
     };
 
+
     /**
      * Show link dialog and set event handlers on dialog controls.
      *
@@ -4786,6 +4803,13 @@
         $openInNewWindow = $linkDialog.find('input[type=checkbox]');
 
         $linkDialog.one('shown.bs.modal', function () {
+          // hide or show the link text attribute
+          if (linkInfo.imageLink) {
+            $('.form-group:first-child', 'form.note-modal-form').hide();
+          } else {
+            $('.form-group:hidden', 'form.note-modal-form').show();
+          }
+
           $linkText.val(linkInfo.text);
           $linkName.val(linkInfo.name);
 
@@ -4816,6 +4840,7 @@
             event.preventDefault();
 
             deferred.resolve({
+              imageLink: linkInfo.imageLink,
               range: linkInfo.range,
               url: $linkUrl.val(),
               text: $linkText.val(),
@@ -4846,6 +4871,8 @@
           $editable = layoutInfo.editable(),
           $popover = layoutInfo.popover(),
           linkInfo = handler.invoke('editor.getLinkInfo', $editable);
+      
+      linkInfo['imageLink'] = !!layoutInfo.imageLink;
 
       var options = $editor.data('options');
 
@@ -5197,6 +5224,14 @@
       showLinkDialog: function (layoutInfo) {
         modules.linkDialog.show(layoutInfo);
       },
+      
+      /**
+       * @param {Object} layoutInfo
+       */
+      showImageLinkDialog: function (layoutInfo) {
+        layoutInfo['imageLink'] = true;
+        modules.linkDialog.show(layoutInfo);
+      },
 
       /**
        * @param {Object} layoutInfo
@@ -5288,7 +5323,6 @@
         if (hide) {
           $btn.parents('.popover').hide();
         }
-
         if ($.isFunction($.summernote.pluginEvents[eventName])) {
           $.summernote.pluginEvents[eventName](event, modules.editor, layoutInfo, value);
         } else if (modules.editor[eventName]) { // on command
@@ -6018,11 +6052,17 @@
           event: 'imageShape',
           value: ''
         });
-
-        var linkButton = tplIconButton(options.iconPrefix + 'link', {
+        
+        var linkButton = tplIconButton('fa fa-link icon-link', {
           title: lang.image.linkEdit,
-          event: 'imageLink',
-          value: ''
+          event: 'showImageLinkDialog',
+          value: 'image'
+        });
+
+        var unlinkButton = tplIconButton('fa fa-unlink icon-unlink', {
+          title: lang.link.unlink,
+          event: 'unlink',
+          value: 'image'
         });
 
         var removeButton = tplIconButton(options.iconPrefix + 'trash-o', {
@@ -6034,7 +6074,7 @@
         var content = '<div class="btn-group">' + fullButton + halfButton + quarterButton + '</div>' +
                       '<div class="btn-group">' + leftButton + rightButton + justifyButton + '</div>' +
                       '<div class="btn-group">' + roundedButton + circleButton + thumbnailButton + noneButton + '</div>' +
-                      '<div class="btn-group">' + linkButton + '</div>' +
+                      '<div class="btn-group">' + linkButton + unlinkButton + '</div>' +
                       '<div class="btn-group">' + removeButton + '</div>';
         return tplPopover('note-image-popover', content);
       };

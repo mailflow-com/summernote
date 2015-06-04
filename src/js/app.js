@@ -43,7 +43,7 @@ require([
       {url: 'http://www.mathsisfun.com/data/images/random-variable-1.gif'}
       ]}});
     });},
-    height: 300,                  // set editable area's height
+    height: 500,                  // set editable area's height
     focus: true,                  // set focus editable area after summernote loaded
     tabsize: 2,                   // size of tab
     placeholder: 'Type your message here...', // set editable area's placeholder text
