@@ -469,6 +469,11 @@ define([
         return this.normalize();
       };
 
+      
+      this.insertImageLinkNode = function (node) {
+        $(this.ec.childNodes[so]).replaceWith(node);
+        return node;
+      }
       /**
        * insert node at current cursor
        *
@@ -478,13 +483,11 @@ define([
       this.insertNode = function (node) {
         var rng = this.wrapBodyInlineWithPara().deleteContents();
         var info = dom.splitPoint(rng.getStartPoint(), dom.isInline(node));
-
         if (info.rightNode) {
           info.rightNode.parentNode.insertBefore(node, info.rightNode);
         } else {
           info.container.appendChild(node);
         }
-
         return node;
       };
   
@@ -580,8 +583,14 @@ define([
             }
   
             var nativeRng = selection.getRangeAt(0);
+
+            if (nativeRng.startContainer.className == 'note-editable') {
+              so = nativeRng.startOffset - 1;
+            } else {
+              so = nativeRng.startOffset;
+            }
+            
             sc = nativeRng.startContainer;
-            so = nativeRng.startOffset;
             ec = nativeRng.endContainer;
             eo = nativeRng.endOffset;
           } else { // IE8: TextRange

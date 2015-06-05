@@ -520,7 +520,9 @@ define([
       var linkText = linkInfo.text;
       var isNewWindow = linkInfo.newWindow;
       var linkName = linkInfo.name;
+      
       var rng = linkInfo.range;
+
 
       if (linkInfo.imageLink) {
         var linkNode = $('img', rng.ec)[0];
@@ -539,7 +541,11 @@ define([
       var anchors;
       if (isTextChanged) {
         // Create a new link when text changed.
-        var anchor = rng.insertNode($('<A></A>')[0], true);
+        if (linkInfo.imageLink) {
+          var anchor = rng.insertImageLinkNode($('<A></A>')[0], true);
+        } else {
+          var anchor = rng.insertNode($('<A></A>')[0], true);
+        }
 
         $(anchor).append(linkInner).attr({
           href: linkUrl,
@@ -597,12 +603,9 @@ define([
      */
     this.getLinkInfo = function ($editable) {
       $editable.focus();
-
       var rng = range.create().expand(dom.isAnchor);
-
       // Get the first anchor on range(for edit).
-      var $anchor = $(list.head(rng.nodes(dom.isAnchor)));
-
+      var $anchor = $(list.head(rng.nodes(dom.isAnchor)));      
       return {
         range: rng,
         text: rng.toString(),
